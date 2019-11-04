@@ -97,6 +97,14 @@ callbacks = [
 # Train and evaluate
 model.fit(train_dataset, epochs=12, callbacks=callbacks)
 
+model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
+eval_loss, eval_acc = model.evaluate(eval_dataset)
+print('\nEval loss: {}, Eval Accuracy: {}'.format(eval_loss, eval_acc))
+
+path = '../save_model/'
+model.save(path, save_format='tf')
+
+
 
 
 
