@@ -3,3 +3,4 @@ logs/
 training_checkpoints/
 save_model/
 src/.DS_Store
+.DS_Store
