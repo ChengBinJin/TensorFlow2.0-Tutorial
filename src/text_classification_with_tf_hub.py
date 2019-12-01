@@ -49,4 +49,4 @@ results = model.evaluate(test_data.batch(512), verbose=1)
 
 print("Test resutls...")
 for name, value in zip(model.metrics_names, results):
-    print("{}: {:.2%}".format(name, value))
+    print("{}: {:.3f}".format(name, value))
