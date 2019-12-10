@@ -165,3 +165,81 @@ plt.show()
 # View in TensorBoard
 # If you want to share TensorBoard results you can upload the logs to TensorBoard.dev by copying the follwing into
 # a code-cell
+
+# Strategies to prevent overfitting
+regularizer_histories = dict()
+regularizer_histories['Tiny'] = size_histories['Tiny']
+
+# Add weight regularization
+# noinspection PyUnresolvedReferences
+l2_model = tf.keras.Sequential([
+    tf.keras.layers.Dense(512, activation='elu',
+                          kernel_regularizer=tf.keras.regularizers.l2(0.001),
+                          input_shape=(FEATURES,)),
+    tf.keras.layers.Dense(512, activation='elu',
+                          kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+    tf.keras.layers.Dense(512, activation='elu',
+                          kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+    tf.keras.layers.Dense(512, activation='elu',
+                          kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+regularizer_histories['l2'] = compile_and_fit(l2_model, "regularizers/l2")
+
+plotter.plot(regularizer_histories)
+plt.ylim([0.5, 0.7])
+plt.show()
+
+# More info
+# Ther eare two important things to note about this sort of regularization.
+# First: if you are writing your own training loop, then you need to be sure to ask the the model for it's
+#        regularization losses.
+# result = l2_model(feature)
+# regularization_loss = tf.add_n(l2_model.losses)
+# Second: This implementation works by adding the weight penalities to the model's loss, and then applying a standard
+#         optimization procedure after that.
+
+# Add dropout
+# noinspection PyUnresolvedReferences
+dropout_model = tf.keras.Sequential([
+    tf.keras.layers.Dense(512, activation='elu', input_shape=(FEATURES,)),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, activation='elu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, activation='elu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, activation='elu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+regularizer_histories['dropout'] = compile_and_fit(dropout_model, "regularizers/dropout")
+
+plotter.plot(regularizer_histories)
+plt.ylim([0.5, 0.7])
+plt.show()
+
+# Combined L2 + dropout
+# noinspection PyUnresolvedReferences
+combined_model = tf.keras.Sequential([
+    tf.keras.layers.Dense(512, kernel_regularizer=tf.keras.regularizers.l2(0.0001),
+                          activation='elu', input_shape=(FEATURES,)),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, kernel_regularizer=tf.keras.regularizers.l2(0.0001),
+                          activation='elu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, kernel_regularizer=tf.keras.regularizers.l2(0.0001),
+                           activation='elu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, kernel_regularizer=tf.keras.regularizers.l2(0.0001),
+                          activation='elu'),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+regularizer_histories['combined'] = compile_and_fit(combined_model, "regularizers/combined")
+
+plotter.plot(regularizer_histories)
+plt.ylim([0.5, 0.7])
+plt.show()
