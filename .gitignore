@@ -5,3 +5,8 @@ save_model/
 src/.DS_Store
 .DS_Store
 tensorboard_logs/
+checkpoints/
+training_1/
+training_2/
+src/saved_model
+src/my_model.h5
