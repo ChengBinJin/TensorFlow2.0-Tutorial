@@ -10,3 +10,4 @@ training_1/
 training_2/
 src/saved_model
 src/my_model.h5
+src/*.tfrecord
